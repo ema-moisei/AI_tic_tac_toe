@@ -9,8 +9,8 @@ A path to a file with the following format:
 
 Example input file:
 X
-X 0 None
-None 0 X
+None None O
+X X O
 None None None
 
 Output:

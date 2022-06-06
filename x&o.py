@@ -1,3 +1,6 @@
+import sys
+import os
+
 
 def numar_pozitii_completate(board):
     """ Numara cate pozitii sunt completate """
@@ -520,12 +523,54 @@ def movema(board, marker="X"):
 
 
 def main():
-    board = [
-        [None, None, "X"],
-        ["X", "X", "O"],
-        ["O", "X", "O"]
-    ]
-    coord_x, coord_y = movema(board, marker="X")
+    if len(sys.argv) != 2:
+        sys.exit("The program needs one argument")
+    file_path = sys.argv[1]
+    if len(file_path) == 0:
+        sys.exit("You need to give a file as a parameter")
+    if os.path.exists(file_path) is False:
+        sys.exit("The given path does not exist")
+    if os.path.isfile(file_path) is False:
+        sys.exit("The given path does not represent the path of a file")
+    file_name = os.path.split(file_path)[1]
+    if file_name != "input.txt":
+        sys.exit("The given file is not the one requested")
+
+    board = []
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+        marker = lines[0].strip()
+        for line in lines[1:]:
+            elements = line.strip().split(" ")
+            if len(elements) != 3:
+                sys.exit("The given board is not properly filled out")
+            for index in range(0, len(elements)):
+                if elements[index] == 'None':
+                    elements[index] = None
+            board.append(elements)
+
+    if len(board) != 3:
+        sys.exit("The given board is not properly filled out")
+
+    if not (marker == "X" or marker == "O"):
+        sys.exit("The given marker is invalid. Choose one between 'X', 'O'.")
+
+    X_elements = 0
+    O_elements = 0
+    for line in board:
+        for element in line:
+            if element != "X" and element != "O" and element is not None:
+                sys.exit("The given board is not properly filled out")
+            if element == "X":
+                X_elements = X_elements + 1
+            if element == "O":
+                O_elements = O_elements + 1
+    if X_elements > O_elements and marker == "X":
+        sys.exit("The given marker is not suitable. Now it's the turn of the player with the 'O' marker.")
+    if O_elements > X_elements and marker == "O":
+        sys.exit("The given marker is not suitable. Now it's the turn of the player with the 'X' marker.")
+
+    coord_x, coord_y = movema(board, marker)
     print(coord_x, coord_y)
 
 
